@@ -1,0 +1,27 @@
+{
+  "name": "smasharenas",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@d-fischer/passport-twitch": "^1.0.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "isomorphic-fetch": "^2.2.1",
+    "jsonwebtoken": "^8.5.1",
+    "logger": "^0.0.1",
+    "mongoose": "^5.9.18",
+    "next": "^9.4.4",
+    "nookies": "^2.3.1",
+    "passport": "^0.4.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
+  },
+  "scripts": {
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "next start"
+  }
+}
