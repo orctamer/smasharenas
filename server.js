@@ -9,7 +9,6 @@ require('./db/mongoose');
 var app = express();
 var User = require('./db/models/users');
 var authRoutes = require('./routes/dashboard-routes');
-
 // NextJS
 
 // Middlewares

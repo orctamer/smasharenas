@@ -1,13 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%=user.displayName %> | Dashboard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
 </head>
+
 <body>
-  <img src=<%=user.profileImage%> />
-  <h1>Welcome <%=user.displayName %></h1>
+  <%- include('navbar', {user:user}); %>
+  <div id="app">
+    <section class="hero is-black has-text-centered">
+      <div class="hero-body">
+        <figure class="image is-128x128 is-inline-block">
+          <img style="border: 4px solid #f14668" class="is-rounded" src=<%=user.profileImage%> />
+        </figure>
+        <h1 class="title">Welcome <%=user.displayName %></h1>
+      </div>
+    </section>
+
+    <section class="mt-6 container has-text-centered">
+      <div class="columns">
+        <div class="column is-offset-one-quarter">
+      <table class="table is-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>User</th>
+            <th>Name</th>
+            <th>Icon</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>0</th>
+            <th>Effy</th>
+            <th>Mario</th>
+            <th><img src="../icons/Mario.png" width="40px" /></th>
+          </tr>
+        </tbody>
+      </table>
+        </div>
+        <div class="column">
+      <div class="field has-addons">
+        <div class="control">
+          <div class="select">
+            <select>
+              <option v-for="char of chars">{{char.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="control">
+          <button class="button is-dark">Submit</button>
+        </div>
+      </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
 </body>
+<script>
+  var app = new Vue({
+    el: '#app',
+    data: {
+      chars: [],
+      newMessage: null,
+      user: null,
+      character: null
+    },
+    mounted() {
+      axios.get('../charList.json')
+        .then(response => (this.chars = response.data.fighters))
+    },
+    methods: {
+      send() {
+        this.message.push({
+          message: this.newMessage,
+          user: 'Effy',
+          character: 'Mario'
+        })
+        this.newMessage = null;
+      }
+    }
+  })
+</script>
+
 </html>
