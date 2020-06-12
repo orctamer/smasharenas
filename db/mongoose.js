@@ -8,8 +8,8 @@ mongoose.connect('mongodb://localhost:27017/smasharenas', {
 const db = mongoose.connection;
 
 db.on('error', (e) => {
-  logger.error(e.toString(), true);
-  logger.error(e.stack,true);
+  console.log(e.toString());
+  console.log(e.stack.toString());
   process.exit(999);
 })
 
