@@ -9,7 +9,7 @@ var app = express();
 var profileRoutes = require('./routes/profile-routes');
 var authRoutes = require('./routes/auth-routes');
 require("./config/passport-setup");
-
+var port = process.env.PORT
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -43,7 +43,9 @@ app.get("/", function (req, res) {
   })
 }) */
 
-app.listen(3000);
+app.listen(port, ()=> {
+  console.log(`Server is running on: ${port}`)
+});
 
 
 /*  let msg = [];
