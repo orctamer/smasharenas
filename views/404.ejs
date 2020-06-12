@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smash Arena</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css">
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+<%- include('navbar', {user:user}); %>
+  <section class="hero has-text-centered is-black is-large is-full-height">
+  <div class="hero-body">
+    <div class="container">
+      <img src="../404.png" />
+      <h1 class="title">
+        Room Not Found
+      </h1>
+      <h2 class="subtitle">
+        Invalid Room or Owner has not made a room
+      </h2>
+    </div>
+  </div>
+</section>
+</body>

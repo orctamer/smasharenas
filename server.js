@@ -8,8 +8,9 @@ require('dotenv').config();
 require('./db/mongoose');
 var app = express();
 var User = require('./db/models/users');
-var authRoutes = require('./routes/dashboard-routes');
-// NextJS
+var profileRoutes = require('./routes/profile-routes');
+var authRoutes = require('./routes/auth-routes');
+require("./config/passport-setup");
 
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,71 +26,24 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 })
 
-passport.deserializeUser((id, done) => {
-  User.findById(id).then((user)=> {
-    done(null, user);
-  })
-})
-
-passport.use(
-	new twitchStrategy(
-		{
-			clientID: process.env.TWITCH_ID,
-			clientSecret: process.env.TWITCH_SECRET,
-			callbackURL: process.env.TWITCH_CALLBACK,
-			scope: process.env.SCOPE,
-		},
-		function (accessToken, refreshToken, profile, done) {
-      // Suppose we are using mongo..
-      User.findOne({
-				twitchId: profile.id
-			}).then((currentUser) => {
-        if (currentUser) {
-          // do stuff
-          done(null,currentUser)
-          console.log(`Found User: ${currentUser.displayName}`)
-        } else {
-            new User({
-              twitchId: profile.id,
-              displayName: profile.display_name,
-              profileImage: profile.profile_image_url,
-            })
-              .save()
-              .then((newUser) => {
-                console.log(`Username created : ${newUser}`);
-                done(null, newUser)
-              });
-        }
-      })
-		}
-	)
-);
-
-passport.serializeUser(function (user, done) {
-	done(null, user);
-});
-
-passport.deserializeUser(function (user, done) {
-	done(null, user);
-});
-
 // Routes
 
-app.use('/dashboard/', authRoutes)
+app.use('/auth', authRoutes)
+app.use('/arena', profileRoutes)
 
 app.get("/", function (req, res) {
-	res.render("index", { user: req.user });
+	res.render("index", { user: req.user});
 });
 
-app.get("/auth/", passport.authenticate("twitch"));
-app.get(
-	"/auth/callback",
-	passport.authenticate("twitch", { failureRedirect: "/" }),
-	function (req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/dashboard/')
-	}
-);
+
+/* io.on('connection', function(socket) {
+  socket.on('entry', (message) => {
+    let nsp = io.of(message.room);
+    nsp.emit('room', {
+      message: message
+    })
+  })
+}) */
 
 app.listen(3000);
 

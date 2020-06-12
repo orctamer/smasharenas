@@ -13,6 +13,9 @@
       <a href="/" class="navbar-item">
         Home
       </a>
+      <a href="../auth/logout" class="navbar-item">
+        Logout
+      </a>
     </div>
 
     <div class="navbar-end">
@@ -22,14 +25,17 @@
           <img class="image" style="margin-right: 5px" src=<%=user.profileImage%> />
           <p>Welcome back <span class="has-text-weight-bold	"><%=user.displayName%></span></p>
         </div>
+        
         <div class="buttons">
-          <a href="/dashboard/" class="button is-dark">
-            <strong>Dashboard</strong>
+          <a href="/arena/<%=user.twitchId%>" class="button is-dark">
+            <strong>Arena</strong>
           </a>
-        </div>
+        </div>         
+
+
         <% } else { %>
         <div class="buttons">
-          <a href="/auth" class="button is-dark">
+          <a href="auth/login" class="button is-dark">
             <strong>Login</strong>
           </a>
         </div>

@@ -24,13 +24,13 @@
     </h2>
     <% if (user) { %>
     <div class="buttons">
-      <a href="/dashboard/" class="button is-dark ">
-        <strong>Get Started</strong>
+      <a href="/arena/<%=user.twitchId %> " class="button is-danger ">
+        <strong>Enter Your Arena</strong>
       </a>
     </div>
     <% } else { %>
     <div class="buttons">
-      <a href="/auth" class="button is-dark">
+      <a href="/auth/login" class="button is-dark">
         <strong>Get Started</strong>
       </a>
     </div>

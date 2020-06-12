@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%=user.displayName %> | Dashboard</title>
+  <title>Arena | <%=owner.displayName %></title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css">
   <link rel="stylesheet" href="../style.css">
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -18,16 +18,37 @@
     <section class="hero is-black has-text-centered">
       <div class="hero-body">
         <figure class="image is-128x128 is-inline-block">
-          <img style="border: 4px solid #f14668" class="is-rounded" src=<%=user.profileImage%> />
+          <img style="border: 4px solid #f14668" class="is-rounded" src=<%=owner.profileImage%> />
         </figure>
-        <h1 class="title">Welcome <%=user.displayName %></h1>
+        <h1 class="title"><%=owner.displayName %>'s Arena</h1>
       </div>
     </section>
+    <% if (user) { %>
+    <% if (owner.twitchId == user.twitchId) { %>
+       <section class="section">
+    <div class="container">
+      <h1 class="title">Admin Panel</h1>
+      <div class="field">
+      <label class="label">Room Name</label>
+      <input class="input">
+      <label class="label">Room Password</label>
+      <input class="input">
+            </div>
+      <div class="field ">
+      <button class="button is-link">Update Room</button>
+      <button class="button is-danger">Clear Arena</button>
+    </div>
+    </div>
+  </section>
+    <% } %>     
+    <% } %>
+
 
     <section class="mt-6 container has-text-centered">
       <div class="columns">
         <div class="column is-offset-one-quarter">
-      <table class="table is-bordered">
+        <label class="label">Arena Room</label>
+      <table style="width: 100%" class="table is-bordered">
         <thead>
           <tr>
             <th>#</th>
@@ -37,30 +58,50 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th>0</th>
-            <th>Effy</th>
-            <th>Mario</th>
-            <th><img src="../icons/Mario.png" width="40px" /></th>
-          </tr>
+        <tr v-for="(list, index) of messages">
+        <th>{{index}}</th>
+        <th>{{list.nickname || list.user}}</th>
+        <th>{{list.character}}</th>
+        <th><img width="40px" :src="'../icons/'+chars.find(char => char.name == list.character).image" /></th>
+        </tr>
         </tbody>
       </table>
         </div>
         <div class="column">
+        <% if (!user) { %>
+         <div class="section">
+          <h1 class="title">
+          Welcome Guest!
+          </h1>
+          <h2 class="subtitle">
+          In order to join the arena you must login
+          </h2>
+         <a href="../auth/login"> <button class="button is-link">Login</button> </a>
+         </div>
+        <% } %>
+        <% if (user) { %>
+      <div class="field" style="width: 264px">
+      <label class="label">Smash Name</label>
+      <div class="control">
+        <input v-model="nickname" class="input" type="text" placeholder="Optional">
+      </div>
+      </div>
       <div class="field has-addons">
         <div class="control">
           <div class="select">
-            <select>
+            <select v-model="character">
+              <option disabled value="">Choose a Character</option>
               <option v-for="char of chars">{{char.name}}</option>
             </select>
           </div>
         </div>
         <div class="control">
-          <button class="button is-dark">Submit</button>
+          <button @click="send()" class="button is-dark">Submit</button>
         </div>
       </div>
         </div>
-      </div>
+      </div>        
+        <% } %>
     </section>
 
   </div>
@@ -70,9 +111,21 @@
     el: '#app',
     data: {
       chars: [],
+      message: null,
       newMessage: null,
       user: null,
-      character: null
+      character: 'Banjo & Kazooie',
+      messages: [],
+      nickname: null
+    },
+    created() {
+      socket.io('room', (data) => {
+        this.messages.push({
+          message: message.data,
+          user: <%=user.displayName %>,
+          character: this.character
+        })
+      })
     },
     mounted() {
       axios.get('../charList.json')
@@ -80,12 +133,11 @@
     },
     methods: {
       send() {
-        this.message.push({
-          message: this.newMessage,
-          user: 'Effy',
-          character: 'Mario'
+        this.messages.push({
+          user: '<%= user.displayName %>',
+          character: this.character,
+          nickname: this.nickname
         })
-        this.newMessage = null;
       }
     }
   })
