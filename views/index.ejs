@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smash Arena</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css">
-  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 
@@ -24,13 +24,13 @@
     </h2>
     <% if (user) { %>
     <div class="buttons">
-      <a href="/arena/<%=user.twitchId %> " class="button is-danger ">
+      <a href="arena/<%=user.twitchId %> " class="button is-danger ">
         <strong>Enter Your Arena</strong>
       </a>
     </div>
     <% } else { %>
     <div class="buttons">
-      <a href="/auth/login" class="button is-dark">
+      <a href="auth/login" class="button is-dark">
         <strong>Get Started</strong>
       </a>
     </div>

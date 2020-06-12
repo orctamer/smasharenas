@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Arena | <%=owner.displayName %></title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css">
-  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
@@ -62,7 +62,7 @@
         <th>{{index}}</th>
         <th>{{list.nickname || list.user}}</th>
         <th>{{list.character}}</th>
-        <th><img width="40px" :src="'../icons/'+chars.find(char => char.name == list.character).image" /></th>
+        <th><img width="40px" :src="'icons/'+chars.find(char => char.name == list.character).image" /></th>
         </tr>
         </tbody>
       </table>
