@@ -62,7 +62,7 @@
         <th>{{index}}</th>
         <th>{{list.nickname || list.user}}</th>
         <th>{{list.character}}</th>
-        <th><img width="40px" :src="'icons/'+chars.find(char => char.name == list.character).image" /></th>
+        <th><img width="40px" :src="'../icons/'+chars.find(char => char.name == list.character).image" /></th>
         </tr>
         </tbody>
       </table>
@@ -122,7 +122,7 @@
       socket.io('room', (data) => {
         this.messages.push({
           message: message.data,
-          user: <%=user.displayName %>,
+          user: '<%=user.displayName %>',
           character: this.character
         })
       })
