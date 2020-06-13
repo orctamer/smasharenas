@@ -169,8 +169,16 @@
       "image": "Mewtwo.png"
     },
     {
-      "name": "Mii Fighter",
-      "image": "MiiFighter.png"
+      "name": "Mii Brawler",
+      "image": "MiiBrawler.png"
+    },
+    {
+      "name": "Mii Gunner",
+      "image": "MiiGunner.png"
+    },
+    {
+      "name": "Mii Swordfighter",
+      "image": "MiiSwordfighter.png"
     },
     {
       "name": "MrGame & Watch",
@@ -215,6 +223,10 @@
     {
       "name": "Pokemon Trainer",
       "image": "PokemonTrainer.png"
+    },
+    {
+      "name": "Random",
+      "image": "Random.png"
     },
     {
       "name": "Richter",
@@ -307,18 +319,6 @@
     {
       "name": "Zero Suit Samus",
       "image": "ZeroSuitSamus.png"
-    },
-    {
-      "name": "Mii Brawler",
-      "image": "MiiBrawler.png"
-    },
-    {
-      "name": "Mii Gunner",
-      "image": "MiiGunner.png"
-    },
-    {
-      "name": "Mii Swordfighter",
-      "image": "MiiSwordfighter.png"
     }
   ]
 }

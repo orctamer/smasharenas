@@ -4,9 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <% if (owner) { %>
   <title>Arena | <%=owner.displayName %></title>
+  <% } %>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
@@ -17,10 +19,12 @@
   <div id="app">
     <section class="hero is-black has-text-centered">
       <div class="hero-body">
+        <% if (owner) { %>
         <figure class="image is-128x128 is-inline-block">
           <img style="border: 4px solid #f14668" class="is-rounded" src=<%=owner.profileImage%> />
         </figure>
         <h1 class="title"><%=owner.displayName %>'s Arena</h1>
+        <% } %>
       </div>
     </section>
     <% if (user) { %>
@@ -59,7 +63,7 @@
         </thead>
         <tbody>
         <tr v-for="(list, index) of messages">
-        <th>{{index}}</th>
+        <th>{{index + 1}}</th>
         <th>{{list.nickname || list.user}}</th>
         <th>{{list.character}}</th>
         <th><img width="40px" :src="'../icons/'+chars.find(char => char.name == list.character).image" /></th>
@@ -119,11 +123,15 @@
       nickname: null
     },
     created() {
-      socket.io('room', (data) => {
+      <% if (user) { %>
+      this.user = '<%=user.displayName %>'
+      <% } %>
+      const socket = io('http://localhost:3000');
+      socket.on('room', (data) => {
         this.messages.push({
-          message: message.data,
-          user: '<%=user.displayName %>',
-          character: this.character
+          message: data.message,
+          user: data.user,
+          character: data.character
         })
       })
     },
@@ -133,8 +141,19 @@
     },
     methods: {
       send() {
+        let checkUser = this.messages.find(x => x.user == this.user);
+        if (checkUser) {
+          var index = this.messages.indexOf(checkUser)
+          if (index !== -1) {
+          return this.messages.splice(index, 1, {
+              user: this.user,
+              character: this.character,
+              nickname: this.nickname
+            })
+          }
+        }
         this.messages.push({
-          user: '<%= user.displayName %>',
+          user: this.user,
           character: this.character,
           nickname: this.nickname
         })

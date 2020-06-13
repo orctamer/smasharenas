@@ -11,7 +11,7 @@ const authCheck = (req, res, next) => {
 }
 
 router.get(`/`, authCheck, (req, res) => {
-  res.redirect(`arena/${req.user.displayName.toLowerCase()}`)
+  res.redirect(`/arena/${req.user.twitchId}`)
 })
 
 router.get(`/:id`, async (req, res) => {
