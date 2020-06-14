@@ -24,7 +24,7 @@ router.get(
 	"/callback",
 	passport.authenticate("twitch", { failureRedirect: "/" }),
 	function (req, res) {
-    var redirectRoute = req.headers.referer || `arena/${req.user.twitchId}`
+    var redirectRoute = req.headers.referer || `/arena/${req.user.twitchId}`
     // Successful authentication, redirect arena.
     res.redirect(redirectRoute)
 	}

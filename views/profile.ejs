@@ -11,7 +11,8 @@
   <link rel="stylesheet" href="../style.css">
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="../app.js"></script>
 </head>
 
 <body>
@@ -27,139 +28,176 @@
         <% } %>
       </div>
     </section>
-    <% if (user) { %>
-    <% if (owner.twitchId == user.twitchId) { %>
-      <section class="section">
-    <div class="container">
-      <h1 class="title">Admin Panel</h1>
-      <div class="field">
-      <label class="label">Room Name</label>
-      <input class="input">
-      <label class="label">Room Password</label>
-      <input class="input">
-            </div>
-      <div class="field ">
-      <button class="button is-link">Update Room</button>
-      <button class="button is-danger">Clear Arena</button>
-    </div>
-    </div>
-  </section>
-    <% } %>     
-    <% } %>
 
-
-    <section class="mt-6 container has-text-centered">
-      <div class="columns">
-        <div class="column is-offset-one-quarter">
-        <label class="label">Arena Room</label>
-      <table style="width: 100%" class="table is-bordered">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>User</th>
-            <th>Name</th>
-            <th>Icon</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr v-for="(list, index) of messages">
-        <th>{{index + 1}}</th>
-        <th>{{list.nickname || list.user}}</th>
-        <th>{{list.character}}</th>
-        <th><img width="40px" :src="'../icons/'+chars.find(char => char.name == list.character).image" /></th>
-        </tr>
-        </tbody>
-      </table>
+    <div class="column" style="min-height: 50vh;">
+      <section class="mt-6 container has-text-centered">
+        <div v-if="messages.room.roomName || messages.room.roomPassword">
+          <h1 class="title">Room Information</h1>
+          <p class="mb-5 subtitle">ID: <span class="has-text-weight-bold">{{messages.room.roomName}}</span> — Password: <span class="has-text-weight-bold">{{messages.room.roomPassword}}</span></p>
         </div>
-        <div class="column">
-        <% if (!user) { %>
-         <div class="section">
-          <h1 class="title">
-          Welcome Guest!
-          </h1>
-          <h2 class="subtitle">
-          In order to join the arena you must login
-          </h2>
-         <a href="../auth/login"> <button class="button is-link">Login</button> </a>
-         </div>
-        <% } %>
-        <% if (user) { %>
-      <div class="field" style="width: 264px">
-      <label class="label">Smash Name</label>
-      <div class="control">
-        <input v-model="nickname" class="input" type="text" placeholder="Optional">
-      </div>
-      </div>
-      <div class="field has-addons">
-        <div class="control">
-          <div class="select">
-            <select v-model="character">
-              <option disabled value="">Choose a Character</option>
-              <option v-for="char of chars">{{char.name}}</option>
-            </select>
+        <div class="columns">
+          <div class="column is-offset-one-quarter">
+            <label class="label">Arena Room</label>
+            <table style="width: 100%" class="table is-bordered">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>User</th>
+                  <th>Character</th>
+                  <th>Icon</th>
+                  <% if (user && owner.twitchId == user.twitchId) { %>
+                  <th>Mod</th>
+                  <% } %>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(list, index) in messages.lobby">
+                  <th>{{index + 1}}</th>
+                  <th>{{list.nickname ? `${list.user} (${list.nickname})` : list.user}}</th>
+                  <th>{{list.character}}</th>
+                  <th><img width="40px" :src="'../icons/'+chars.find(char => char.name == list.character).image" /></th>
+                  <% if (user && owner.twitchId == user.twitchId) { %>
+                  <th>
+                  <div v-if="index != 0">
+                  <button @click="kickUser(list.user)" class="is-small button is-danger">Kick</button>
+                  </div>
+                  <div v-else>
+                    <button @click="kickUser(list.user)" class="is-small button is-success">Done</button>
+                  </div>
+                  </th>
+                  <% } %>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+          <div class="column">
+            <% if (!user) { %>
+            <div class="section">
+              <h1 class="title">
+                Welcome Guest!
+              </h1>
+              <h2 class="subtitle">
+                In order to join the arena you must login
+              </h2>
+              <a href="../auth/login"> <button class="button is-link">Login</button> </a>
+            </div>
+            <% } %>
+            <% if (user && owner.twitchId != user.twitchId) { %>
+            <div class="field" style="width: 274px">
+              <label class="label">Smash Name</label>
+              <div class="control">
+                <input maxlength="10"  v-model="nickname" class="input" type="text" placeholder="Optional">
+              </div>
+            </div>
+            <div class="field has-addons">
+              <div class="control">
+                <div class="select">
+                  <select v-model="character">
+                    <option disabled value="">Choose a Character</option>
+                    <option v-for="char of chars">{{char.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="control">
+                <button @click="send()" class="button is-dark">Submit</button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="control">
-          <button @click="send()" class="button is-dark">Submit</button>
-        </div>
-      </div>
-        </div>
-      </div>        
         <% } %>
-    </section>
-
+            <% if (user) { %>
+            <% if (owner.twitchId == user.twitchId) { %>
+              <div style="width: 300px" class="container">
+                <h1 class="title">Admin Panel</h1>              
+                <div class="field">
+                  <label class="label">Room Name</label>
+                  <input :placeholder="messages.room.roomName" v-model="roomName" class="input">
+                  <label class="label">Room Password</label>
+                  <input :placeholder="messages.room.roomPassword" v-model="roomPassword" class="input">
+                </div>
+                <div class="field ">
+                  <button @click="updateRoom()" class="button is-link">Update Room</button>
+                  <button @click="clearRoom()" class="button is-danger">Clear Arena</button>
+                </div>
+              </div>
+            
+            <% } %>
+            <% } %>
+      </section>
+    </div>
+    <%- include ('footer') %> 
   </div>
-</body>
-<script>
-  var app = new Vue({
-    el: '#app',
-    data: {
-      chars: [],
-      message: null,
-      newMessage: null,
-      user: null,
-      character: 'Banjo & Kazooie',
-      messages: [],
-      nickname: null
-    },
-    created() {
-      <% if (user) { %>
-      this.user = '<%=user.displayName %>'
-      <% } %>
-      const socket = io('http://localhost:3000');
-      socket.on('room', (data) => {
-        this.messages.push({
-          message: data.message,
-          user: data.user,
-          character: data.character
+
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        chars: [],
+        user: null,
+        character: 'Banjo & Kazooie',
+        messages: null,
+        nickname: null,
+        socket: null,
+        room: null,
+        roomName: null,
+        roomPassword: null
+      },
+      created() {
+        this.room = window.location.pathname.split('/')[2]
+        this.socket = io.connect('http://localhost:3000').emit('join room', {room:this.room})
+        <% if (user) { %>
+          this.user = '<%=user.displayName %>'
+        <% } %>
+        this.socket.on('room', (data) => {
+          return this.messages = data
         })
-      })
-    },
-    mounted() {
-      axios.get('../charList.json')
-        .then(response => (this.chars = response.data.fighters))
-    },
-    methods: {
-      send() {
-        let checkUser = this.messages.find(x => x.user == this.user);
-        if (checkUser) {
-          var index = this.messages.indexOf(checkUser)
-          if (index !== -1) {
-          return this.messages.splice(index, 1, {
-              user: this.user,
-              character: this.character,
-              nickname: this.nickname
-            })
-          }
+        this.socket.on('update list', (data) => {
+          return this.messages = data
+        })
+        this.socket.on('update room', (data) => {
+          return this.messages = data
+        })
+        this.socket.on('remove lobby', (data) => {
+          return this.messages = data
+        })
+      },
+      mounted() {
+        axios.get('../charList.json')
+          .then(response => (this.chars = response.data.fighters))
+      },
+      methods: {
+        send() {
+          this.socket.emit('send', {
+            user: this.user,
+            character: this.character,
+            nickname: this.nickname,
+            room: this.room,
+          })
+        },
+        updateRoom() {
+          this.socket.emit('update', {
+            roomName: this.roomName,
+            roomPassword: this.roomPassword,
+            room: this.room
+          })
+        },
+        kickUser(user) {
+          this.socket.emit('kick', {
+            username: user,
+            room: this.room
+          })
+        },
+        clearRoom() {
+          this.socket.emit('clear', {
+            room: this.room,
+            roomName: this.roonName,
+            roomPassword: this.roomPassword            
+          })
         }
-        this.messages.push({
-          user: this.user,
-          character: this.character,
-          nickname: this.nickname
-        })
       }
-    }
-  })
-</script>
+    })
+  </script>
+</body>
 
 </html>
