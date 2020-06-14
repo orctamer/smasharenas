@@ -145,7 +145,7 @@
       },
       created() {
         this.room = window.location.pathname.split('/')[2]
-        this.socket = io.connect('http://localhost:3000').emit('join room', {room:this.room})
+        this.socket = io.connect('https://smash-arenas.herokuapp.com/').emit('join room', {room:this.room})
         <% if (user) { %>
           this.user = '<%=user.displayName %>'
         <% } %>
