@@ -13,9 +13,11 @@
       <a href="/" class="navbar-item">
         Home
       </a>
+      <% if (user) { %>
       <a href="/auth/logout" class="navbar-item">
         Logout
-      </a>
+      </a>       
+      <% } %>
     </div>
 
     <div class="navbar-end">
