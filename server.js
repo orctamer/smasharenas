@@ -14,6 +14,8 @@ var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http)
 var charList = require("./public/charList.json")
+var User = require('./db/models/users');
+
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -28,11 +30,22 @@ app.use("/lib", express.static(path.join(__dirname, "node_modules")));
 passport.serializeUser((user, done) => {
   done(null, user.id);
 })
+
+
+
 // Routes
 app.use('/auth', authRoutes)
 app.use('/arena', profileRoutes)
-app.get("/", function (req, res) {
-	res.render("index", { user: req.user });
+app.get("/", async function (req, res) {
+  // Grab Latest Members
+  let members = await User.find({}, function(err, result) {
+    if (err) {
+      console.log(err)
+    } else {
+      return result
+    }
+  })
+	res.render("index", { user: req.user, members: members });
 });
 // Sockets
 var roomList = {}

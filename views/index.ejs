@@ -41,7 +41,24 @@
       </a>
     </div>
     <% } %>
+      <% if (members) { %>
+          <h1 class="title">
+            Current Members
+          </h1>
+          <table style="background-color: #111;color:white" class="table">
+            <tbody>
+          <% for( let index = 0; index < members.length; index++ ) { %>
+            <tr style="border: 1px solid darkred">
+            <td style='vertical-align: middle;border-bottom: 1px solid darkred;'><%=members[index].displayName%></td>
+            <td style='vertical-align: middle;border-bottom: 1px solid darkred;'><img style="width: 50px" src='<%=members[index].profileImage%>'/></td>
+            <td style='vertical-align: middle;border-bottom: 1px solid darkred;'><a class="button is-dark" href='/arena/<%=members[index].twitchId %>'>Join Arena</a></td>
+            </tr>
+          <% } %>
+              </tbody>
+            </table>
+      <% } %>
   </section>
+
   <%- include('footer', {user:user}); %>
 </body>
 
