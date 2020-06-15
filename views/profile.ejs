@@ -6,6 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <% if (owner) { %>
   <title>Arena | <%=owner.displayName %></title>
+    <meta property="og:title" content="Smash Arenas | <%=owner.displayName%>" />
+    <meta property="og:url" content="https://smash-arenas.herokuapp.com/arena/<%=owner.twitchId%>" />
+    <meta property="og:image" content="<%=owner.profileImage%>" />
+    <meta property="og:description" content="Join <%=owner.displayName%>'s Arena!" />
   <% } %>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css">
   <link rel="stylesheet" href="../style.css">
@@ -22,7 +26,7 @@
       <div class="hero-body">
         <% if (owner) { %>
         <figure class="image is-128x128 is-inline-block">
-          <img style="border: 4px solid #f14668" class="is-rounded" src=<%=owner.profileImage%> />
+          <img style="border: 4px solid #f14668" class="is-rounded" src='<%=owner.profileImage%>' />
         </figure>
         <h1 class="title"><%=owner.displayName %>'s Arena</h1>
         <% } %>
