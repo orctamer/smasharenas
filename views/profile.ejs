@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <% if (owner) { %>
   <title>Arena | <%=owner.displayName %></title>
-    <meta property="og:title" content="Smash Arenas | <%=owner.displayName%>" />
-    <meta property="og:url" content="https://smash-arenas.herokuapp.com/arena/<%=owner.twitchId%>" />
-    <meta property="og:image" content="<%=owner.profileImage%>" />
-    <meta property="og:description" content="Join <%=owner.displayName%>'s Arena!" />
+  <meta property="og:title" content="Smash Arenas | <%=owner.displayName%>" />
+  <meta property="og:url" content="https://smash-arenas.herokuapp.com/arena/<%=owner.twitchId%>" />
+  <meta property="og:image" content="<%=owner.profileImage%>" />
+  <meta property="og:description" content="Join <%=owner.displayName%>'s Arena!" />
   <% } %>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css">
   <link rel="stylesheet" href="../style.css">
@@ -35,11 +35,19 @@
 
     <div class="column" style="min-height: 50vh;">
       <section class="mt-6 container has-text-centered">
+        <% if (user) { %>
         <div v-if="messages.room.roomName || messages.room.roomPassword">
           <h1 class="title">Room Information</h1>
-          <p class="mb-5 subtitle">ID: <span class="has-text-weight-bold">{{messages.room.roomName}}</span> — Password: <span class="has-text-weight-bold">{{messages.room.roomPassword}}</span></p>
+          <p class="mb-5 subtitle">ID: <span class="has-text-weight-bold">{{messages.room.roomName}}</span> — Password:
+            <span class="has-text-weight-bold">{{messages.room.roomPassword}}</span></p>
         </div>
+        <div v-if="messages.room.roomRules">
+          <h1 class="subtitle has-text-weight-bold">Rules</h1>
+          <p style="white-space: pre-wrap;" class="mb-5">{{messages.room.roomRules}}</p>
+        </div>
+        <% } %>
         <div class="columns">
+          <% if (user) { %>
           <div class="column is-offset-one-quarter">
             <label class="label">Arena Room</label>
             <table style="width: 100%" class="table is-bordered">
@@ -62,12 +70,12 @@
                   <th><img width="40px" :src="'../icons/'+chars.find(char => char.name == list.character).image" /></th>
                   <% if (user && owner.twitchId == user.twitchId) { %>
                   <th>
-                  <div v-if="index != 0">
-                  <button @click="kickUser(list.user)" class="is-small button is-danger">Kick</button>
-                  </div>
-                  <div v-else>
-                    <button @click="kickUser(list.user)" class="is-small button is-success">Done</button>
-                  </div>
+                    <div v-if="index != 0">
+                      <button @click="kickUser(list.user)" class="is-small button is-danger">Kick</button>
+                    </div>
+                    <div v-else>
+                      <button @click="kickUser(list.user)" class="is-small button is-success">Done</button>
+                    </div>
                   </th>
                   <% } %>
                 </tr>
@@ -75,7 +83,8 @@
               </tbody>
             </table>
           </div>
-          <div class="column">
+          <% } %>
+          <div class="column mb-5">
             <% if (!user) { %>
             <div class="section">
               <h1 class="title">
@@ -91,7 +100,7 @@
             <div class="field" style="width: 274px">
               <label class="label">Smash Name</label>
               <div class="control">
-                <input maxlength="10"  v-model="nickname" class="input" type="text" placeholder="Optional">
+                <input maxlength="10" v-model="nickname" class="input" type="text" placeholder="Optional">
               </div>
             </div>
             <div class="field has-addons">
@@ -110,27 +119,31 @@
           </div>
         </div>
         <% } %>
-            <% if (user) { %>
-            <% if (owner.twitchId == user.twitchId) { %>
-              <div style="width: 300px" class="container">
-                <h1 class="title">Admin Panel</h1>              
-                <div class="field">
-                  <label class="label">Room Name</label>
-                  <input :placeholder="messages.room.roomName" v-model="roomName" class="input">
-                  <label class="label">Room Password</label>
-                  <input :placeholder="messages.room.roomPassword" v-model="roomPassword" class="input">
-                </div>
-                <div class="field ">
-                  <button @click="updateRoom()" class="button is-link">Update Room</button>
-                  <button @click="clearRoom()" class="button is-danger">Clear Arena</button>
-                </div>
-              </div>
-            
-            <% } %>
-            <% } %>
+        <% if (user) { %>
+        <% if (owner.twitchId == user.twitchId) { %>
+        <div style="width: 300px" class="container">
+          <h1 class="title">Admin Panel</h1>
+          <div class="field">
+            <label class="label">Room ID</label>
+            <input :placeholder="messages.room.roomName" value="messages.room.roomPassword" v-model="roomName" class="input">
+            <label class="label">Room Password</label>
+            <input :placeholder="messages.room.roomPassword" value="messages.room.roomPassword" v-model="roomPassword" class="input">
+          </div>
+          <div class="field">
+            <label class="label">Room Rules</label>
+            <textarea v-model="roomRules" class="textarea" :placeholder="messages.room.roomRules">{{messages.room.roomPassword}}</textarea>
+          </div>
+          <div class="field ">
+            <button @click="updateRoom()" class="button is-link">Update Room</button>
+            <button @click="clearRoom()" class="button is-danger">Clear Arena</button>
+          </div>
+        </div>
+
+        <% } %>
+        <% } %>
       </section>
     </div>
-    <%- include ('footer') %> 
+    <%- include ('footer') %>
   </div>
 
   <script>
@@ -145,17 +158,18 @@
         socket: null,
         room: null,
         roomName: null,
-        roomPassword: null
+        roomPassword: null,
+        roomRules: null
       },
       created() {
         this.room = window.location.pathname.split('/')[2]
-        this.socket = io.connect('https://smash-arenas.herokuapp.com/').emit('join room', {room:this.room})
-        <% if (user) { %>
-          this.user = '<%=user.displayName %>'
-        <% } %>
-        this.socket.on('room', (data) => {
-          return this.messages = data
-        })
+        this.socket = io.connect('https://smash-arenas.herokuapp.com/').emit('join room', { room: this.room })
+          <% if (user) { %>
+            this.user = '<%=user.displayName %>'
+              <% } %>
+                this.socket.on('room', (data) => {
+                  return this.messages = data
+                })
         this.socket.on('update list', (data) => {
           return this.messages = data
         })
@@ -183,6 +197,7 @@
           this.socket.emit('update', {
             roomName: this.roomName,
             roomPassword: this.roomPassword,
+            roomRules: this.roomRules,
             room: this.room
           })
         },
@@ -194,9 +209,10 @@
         },
         clearRoom() {
           this.socket.emit('clear', {
-            room: this.room,
             roomName: this.roomName,
-            roomPassword: this.roomPassword            
+            roomPassword: this.roomPassword,
+            roomRules: this.roomRules,
+            room: this.room
           })
         }
       }
