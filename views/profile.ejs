@@ -13,7 +13,7 @@
   <% } %>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css">
   <link rel="stylesheet" href="../style.css">
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="../app.js"></script>
@@ -147,6 +147,8 @@
   </div>
 
   <script>
+    Vue.config.productionTip = true;
+    Vue.config.devtools = true;
     var app = new Vue({
       el: '#app',
       data: {
@@ -156,20 +158,20 @@
         messages: null,
         nickname: null,
         socket: null,
-        room: null,
+        room: window.location.pathname.split('/')[2],
         roomName: null,
         roomPassword: null,
         roomRules: null
       },
       created() {
         this.room = window.location.pathname.split('/')[2]
-        this.socket = io.connect('https://smasharena.xyz/').emit('join room', { room: this.room })
+        this.socket = io.connect('https://www.smasharena.xyz/').emit('join room', { room: this.room })
           <% if (user) { %>
             this.user = '<%=user.displayName %>'
-              <% } %>
-                this.socket.on('room', (data) => {
-                  return this.messages = data
-                })
+          <% } %>
+            this.socket.on('room', (data) => {
+              return this.messages = data
+            })
         this.socket.on('update list', (data) => {
           return this.messages = data
         })
