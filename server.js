@@ -3,13 +3,13 @@ var bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
 var cookieSession = require("cookie-session");
 var passport = require("passport");
+var fs = require('fs');
 require('dotenv').config();
 require('./db/mongoose');
 var profileRoutes = require('./routes/profile-routes');
 var authRoutes = require('./routes/auth-routes');
 require("./config/passport-setup");
 var port = process.env.PORT;
-var path = require('path');
 var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http)
@@ -21,18 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cookieSession({maxAge: 24*60*60*1000, secret: process.env.SECRET }));
 app.use(passport.initialize());
-//app.use(express.static("./public"));
-app.use(
-	express.static(
-		"./.well-known/acme-challenge/6cPdrOBny_cG8TUd_sjDJQUQAScdNmZ2eQ5-Q-SyeF0/",
-		{ dotfiles: "allow" }
-	)
-);
-app.use('/', (req,res) => {
-  res.send(
-		"6cPdrOBny_cG8TUd_sjDJQUQAScdNmZ2eQ5-Q-SyeF0.n_YKAvCWl3uBTVsO2DNKakL3WKe20_7McDyBTzfiCjc"
-	);
-})
+app.use(express.static("./public"));
 app.use(passport.session());
 app.set("views", "./views");
 app.set("view engine", "ejs");
