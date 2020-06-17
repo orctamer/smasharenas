@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cookieSession({maxAge: 24*60*60*1000, secret: process.env.SECRET }));
 app.use(passport.initialize());
-app.use(express.static("./public"));
+app.use(express.static("./public", {dotfiles: 'allow'}));
 app.use(passport.session());
 app.set("views", "./views");
 app.use(express.static("./public"));
