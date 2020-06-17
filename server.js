@@ -24,13 +24,13 @@ app.use(passport.initialize());
 //app.use(express.static("./public"));
 app.use(
 	express.static(
-		"./.well-known/acme-challenge/3ChpKmm_5zwaBOAiXcJwmegVYIZOP31Bd-uzgigje1Y/",
-		{ dotfiles: "allow" },
+		"./.well-known/acme-challenge/6cPdrOBny_cG8TUd_sjDJQUQAScdNmZ2eQ5-Q-SyeF0/",
+		{ dotfiles: "allow" }
 	)
 );
 app.use('/', (req,res) => {
   res.send(
-		"3ChpKmm_5zwaBOAiXcJwmegVYIZOP31Bd-uzgigje1Y.n_YKAvCWl3uBTVsO2DNKakL3WKe20_7McDyBTzfiCjc"
+		"6cPdrOBny_cG8TUd_sjDJQUQAScdNmZ2eQ5-Q-SyeF0.n_YKAvCWl3uBTVsO2DNKakL3WKe20_7McDyBTzfiCjc"
 	);
 })
 app.use(passport.session());
