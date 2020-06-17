@@ -21,12 +21,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cookieSession({maxAge: 24*60*60*1000, secret: process.env.SECRET }));
 app.use(passport.initialize());
-app.use(express.static("./public", {dotfiles: 'allow'}));
+//app.use(express.static("./public"));
+app.use(
+	express.static(
+		"./.well-known/acme-challenge/3ChpKmm_5zwaBOAiXcJwmegVYIZOP31Bd-uzgigje1Y/",
+		{ dotfiles: "allow" },
+	)
+);
+app.use('/', (req,res) => {
+  res.send(
+		"3ChpKmm_5zwaBOAiXcJwmegVYIZOP31Bd-uzgigje1Y.n_YKAvCWl3uBTVsO2DNKakL3WKe20_7McDyBTzfiCjc"
+	);
+})
 app.use(passport.session());
 app.set("views", "./views");
-app.use(express.static("./public"));
 app.set("view engine", "ejs");
-app.use("/lib", express.static(path.join(__dirname, "node_modules"))); 
 passport.serializeUser((user, done) => {
   done(null, user.id);
 })
