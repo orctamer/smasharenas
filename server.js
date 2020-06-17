@@ -11,8 +11,8 @@ var authRoutes = require('./routes/auth-routes');
 require("./config/passport-setup");
 var port = process.env.PORT;
 var app = express();
-var https = require('https').createServer(app);
-var io = require('socket.io')(https)
+var http = require('http').createServer(app);
+var io = require('socket.io')(http)
 var charList = require("./public/charList.json")
 var User = require('./db/models/users');
 
@@ -131,6 +131,6 @@ io.on("connection", (socket) => {
   })
 });
 
-https.listen(port, ()=> {
+http.listen(port, ()=> {
   console.log(`Server is running on: ${port}`)
 });
