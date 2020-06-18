@@ -164,12 +164,15 @@
         roomRules: null
       },
       created() {
-        this.room = window.location.pathname.split('/')[2]
         this.socket = io.connect('https://www.smasharena.xyz/').emit('join room', { room: this.room })
           <% if (user) { %>
             this.user = '<%=user.displayName %>'
           <% } %>
             this.socket.on('room', (data) => {
+              this.room = data.room.room || null
+              this.roomName = data.room.roomName || null
+              this.roomPassword = data.room.roomPassword || null
+              this.roomRules = data.room.roomRules || null
               return this.messages = data
             })
         this.socket.on('update list', (data) => {
