@@ -158,21 +158,17 @@
         messages: null,
         nickname: null,
         socket: null,
-        room: window.location.pathname.split('/')[2],
         roomName: null,
         roomPassword: null,
         roomRules: null
       },
       created() {
-        this.socket = io.connect('https://www.smasharena.xyz/').emit('join room', { room: this.room })
+        this.socket = io.connect('www.smasharena.xyz').emit('join room', { room: `${window.location.pathname.split('/')[2]}` })
           <% if (user) { %>
             this.user = '<%=user.displayName %>'
           <% } %>
             this.socket.on('room', (data) => {
-              this.room = data.room.room || null
-              this.roomName = data.room.roomName || null
-              this.roomPassword = data.room.roomPassword || null
-              this.roomRules = data.room.roomRules || null
+              console.log(data)
               return this.messages = data
             })
         this.socket.on('update list', (data) => {
@@ -195,21 +191,22 @@
             user: this.user,
             character: this.character,
             nickname: this.nickname,
-            room: this.room,
+            room: window.location.pathname.split('/')[2]
           })
         },
         updateRoom() {
+          console.log('sent room data')
           this.socket.emit('update', {
             roomName: this.roomName,
             roomPassword: this.roomPassword,
             roomRules: this.roomRules,
-            room: this.room
+            room: window.location.pathname.split('/')[2]
           })
         },
         kickUser(user) {
           this.socket.emit('kick', {
             username: user,
-            room: this.room
+            room: window.location.pathname.split('/')[2]
           })
         },
         clearRoom() {
@@ -217,7 +214,7 @@
             roomName: this.roomName,
             roomPassword: this.roomPassword,
             roomRules: this.roomRules,
-            room: this.room
+            room: window.location.pathname.split('/')[2]
           })
         }
       }
