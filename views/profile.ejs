@@ -168,7 +168,9 @@
             this.user = '<%=user.displayName %>'
           <% } %>
             this.socket.on('room', (data) => {
-              console.log(data)
+              this.roomName = data.room.roomName || null
+              this.roomPassword = data.room.roomPassword || null
+              this.roomRules = data.room.roomRules || null              
               return this.messages = data
             })
         this.socket.on('update list', (data) => {
